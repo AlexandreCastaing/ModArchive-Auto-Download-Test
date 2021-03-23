@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ModArchiveAutoDownloader/1.0.0": {
+        "runtime": {
+          "ModArchiveAutoDownloader.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ModArchiveAutoDownloader/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,13 @@
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.exe
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.deps.json
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.runtimeconfig.json
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.runtimeconfig.dev.json
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.dll
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\bin\Debug\netcoreapp3.1\ModArchiveAutoDownloader.pdb
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.csprojAssemblyReference.cache
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.AssemblyInfoInputs.cache
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.AssemblyInfo.cs
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.csproj.CoreCompileInputs.cache
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.dll
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.pdb
+D:\alex\ARCHIVE\Dev\ModArchive\Script\ModArchiveAutoDownloader\ModArchiveAutoDownloader\obj\Debug\netcoreapp3.1\ModArchiveAutoDownloader.genruntimeconfig.cache
