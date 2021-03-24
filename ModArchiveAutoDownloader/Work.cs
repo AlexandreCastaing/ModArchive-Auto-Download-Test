@@ -11,39 +11,65 @@ namespace ModArchiveAutoDownloader
 {
     class Work
     {
-        public Work()
+        int idWork = -1;
+        ThreadWorks parent;
+
+        string dataTrackerPath = "";
+
+        int firstID;
+        int lastID;
+
+        public Work(ThreadWorks _parent, int _idWork
+            , string _pathToDownload, int _firstID, int _lastID)
         {
-            //async
-            //_workByHTML();
+            parent = _parent;
+            idWork = _idWork;
+            dataTrackerPath = _pathToDownload;
+            firstID = _firstID;
+            lastID = _lastID;
+
             _workByAPIID();
 
-            Thread.Sleep(1000);
         }
 
-        public async void _workByHTML()
-        {
-            try
-            {
-                string html = HTTPRequest();
+        private const string URL =
+            "https://modarchive.org/index.php?request=view_player&query=random";
 
-                string linkFile = get_filesurl_from_html(html);
-                if (linkFile == "") throw new Exception("link unfounded.");
+        private const string DATA = @"{}";
 
-                string confirm = download_from_urlHTML(linkFile);
-                Console.WriteLine("> " + confirm);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("err: " + e);
-            }
-        }
+        private string URLAPI =
+            "https://api.modarchive.org/downloads.php?moduleid=";
+
+        string downloadLinkDefault = "https://api.modarchive.org/downloads.php";
+
+
+
+        /* public async void _workByHTML()
+         {
+             try
+             {
+                 string html = HTTPRequest();
+
+                 string linkFile = get_filesurl_from_html(html);
+                 if (linkFile == "") throw new Exception("link unfounded.");
+
+                 string confirm = download_from_urlHTML(linkFile);
+                 Console.WriteLine("> " + confirm);
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine("err: " + e);
+             }
+         }
+        */
+
         public async void _workByAPIID()
         {
             try
             {
 
                 string linkFile = get_random_link_APIID(
-                    45000, 165000 );
+                    firstID, lastID); // 45000, 165000 );
 
                 string confirm = download_from_urlAPI(linkFile);
                 Console.WriteLine("> " + confirm);
@@ -54,19 +80,8 @@ namespace ModArchiveAutoDownloader
             }
         }
 
-      
 
-        private const string URL = 
-            "https://modarchive.org/index.php?request=view_player&query=random";
-        
-        private const string DATA = @"{""object"":{""name"":""Name""}}";
-
-        private string URLAPI = 
-            "https://api.modarchive.org/downloads.php?moduleid=";
-
-        string downloadLinkDefault = "https://api.modarchive.org/downloads.php";
-
-
+       
         private string get_random_link_APIID(int min, int max)
         {
             Random aleatoire = new Random();
@@ -81,12 +96,12 @@ namespace ModArchiveAutoDownloader
         {
             string f = "";
 
-            f += @"D:\alex\ARCHIVE\Dev\ModArchive\DATA\";
+            f += dataTrackerPath;
 
             DateTime dt = DateTime.Now;
             string directory = "" + dt.ToString("yyyy_MM_dd");
 
-            f += "" + directory + @"\";
+            f += "" + directory + @"";
 
             return f;
         }
@@ -192,18 +207,39 @@ namespace ModArchiveAutoDownloader
                 {
                     try
                     {
+                       
                         WebRequest request = WebRequest.Create(_url);
                         WebResponse response = request.GetResponse();
                         originalFileName = response.Headers["Content-Disposition"];
                         //Stream streamWithFileBody = response.GetResponseStream();
 
-                        originalFileName = originalFileName.Replace("attachment; filename=", "");
+                        if(originalFileName != null) { 
+                            originalFileName = originalFileName.Replace("attachment; filename=", "");
 
-                        client.DownloadFile(_url, originalFileName);
+                            /*
+                             client.DownloadFile(_url, originalFileName);
+                             */
+
+                            client.DownloadProgressChanged += (s, e) =>
+                            {
+                                try { 
+                                    parent.progresses[idWork] = e.ProgressPercentage;
+                                    parent.titleInfoProgression();
+                                }
+                                catch { }
+                            };
+
+                            client.DownloadFileTaskAsync(new Uri(_url), originalFileName);
+
+                            return "OK: " + folderPath + "\\" + originalFileName;
+                        }
+                        else
+                        {
+                            return "ERR 2.. " + folderPath + "\\" + originalFileName;
+                        }
                     }
                     catch { }
                 }
-                return folderPath + "\\" + originalFileName;
             }
             catch { }
             return "ERR.. "+ folderPath+"\\"+ originalFileName;

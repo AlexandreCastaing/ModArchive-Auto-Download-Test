@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModArchiveAutoDownloader", "ModArchiveAutoDownloader\ModArchiveAutoDownloader.csproj", "{C36614C4-DB16-4598-853D-67A9395C3AC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MODARCHIVEAUTOD2", "..\MODARCHIVEAUTOD2\MODARCHIVEAUTOD2.csproj", "{204121F8-AF6D-40E9-A67F-6F5E0C7CE9A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C36614C4-DB16-4598-853D-67A9395C3AC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C36614C4-DB16-4598-853D-67A9395C3AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C36614C4-DB16-4598-853D-67A9395C3AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C36614C4-DB16-4598-853D-67A9395C3AC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{204121F8-AF6D-40E9-A67F-6F5E0C7CE9A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204121F8-AF6D-40E9-A67F-6F5E0C7CE9A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204121F8-AF6D-40E9-A67F-6F5E0C7CE9A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204121F8-AF6D-40E9-A67F-6F5E0C7CE9A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
