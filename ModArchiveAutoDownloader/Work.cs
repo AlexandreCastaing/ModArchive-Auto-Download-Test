@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -18,15 +19,21 @@ namespace ModArchiveAutoDownloader
 
         int firstID;
         int lastID;
+        string format;
+
+        string folderPath = "";
+        string originalFileName = "";
 
         public Work(ThreadWorks _parent, int _idWork
-            , string _pathToDownload, int _firstID, int _lastID)
+            , string _pathToDownload, int _firstID, int _lastID, 
+            string _format)
         {
             parent = _parent;
             idWork = _idWork;
             dataTrackerPath = _pathToDownload;
             firstID = _firstID;
             lastID = _lastID;
+            format = _format;
 
             _workByAPIID();
 
@@ -72,7 +79,8 @@ namespace ModArchiveAutoDownloader
                     firstID, lastID); // 45000, 165000 );
 
                 string confirm = download_from_urlAPI(linkFile);
-                Console.WriteLine("> " + confirm);
+                if(confirm.Length > 0)
+                    Console.WriteLine("> " + confirm);
             }
             catch (Exception e)
             {
@@ -101,7 +109,7 @@ namespace ModArchiveAutoDownloader
             DateTime dt = DateTime.Now;
             string directory = "" + dt.ToString("yyyy_MM_dd");
 
-            f += "" + directory + @"";
+            f += "" + directory + @"\modules";
 
             return f;
         }
@@ -186,11 +194,9 @@ namespace ModArchiveAutoDownloader
             return filename;
         }
 
+        WebClient client;
         private string download_from_urlAPI(string _url)
         {
-
-            string folderPath = "";
-            string originalFileName = "";
 
             try
             {
@@ -201,49 +207,95 @@ namespace ModArchiveAutoDownloader
 
                 Directory.SetCurrentDirectory(
                    folderPath
-                );          
+                );
 
-                using (var client = new WebClient())
+                client = new WebClient();
+                
+                try
                 {
-                    try
-                    {
                        
-                        WebRequest request = WebRequest.Create(_url);
-                        WebResponse response = request.GetResponse();
-                        originalFileName = response.Headers["Content-Disposition"];
-                        //Stream streamWithFileBody = response.GetResponseStream();
+                    WebRequest request = WebRequest.Create(_url);
+                    WebResponse response = request.GetResponse();
+                    originalFileName = response.Headers["Content-Disposition"];
+                    //Stream streamWithFileBody = response.GetResponseStream();
 
-                        if(originalFileName != null) { 
-                            originalFileName = originalFileName.Replace("attachment; filename=", "");
+                    if(originalFileName != null) { 
+                        originalFileName = originalFileName.Replace("attachment; filename=", "");
 
-                            /*
-                             client.DownloadFile(_url, originalFileName);
-                             */
 
-                            client.DownloadProgressChanged += (s, e) =>
-                            {
-                                try { 
-                                    parent.progresses[idWork] = e.ProgressPercentage;
-                                    parent.titleInfoProgression();
-                                }
-                                catch { }
-                            };
-
-                            client.DownloadFileTaskAsync(new Uri(_url), originalFileName);
-
-                            return "OK: " + folderPath + "\\" + originalFileName;
-                        }
-                        else
+                        client.DownloadProgressChanged += (s, e) =>
                         {
-                            return "ERR 2.. " + folderPath + "\\" + originalFileName;
-                        }
+                            try { 
+                                parent.progresses[idWork] = e.ProgressPercentage;
+                                parent.titleInfoProgression();
+                            }
+                            catch { }
+                        };
+
+                        Uri uri = new Uri(_url);
+                        client.DownloadFileTaskAsync(uri, originalFileName);
+                        client.DownloadFileCompleted += downloadFileCompleted;
+                        // ok next step
+
+
+
                     }
-                    catch { }
+                    else
+                    {
+                        parent.decrementNMusic();
+
+                        return " " + idWork.ToString().PadRight(3) + " " + "ERR 2.. " + folderPath + "\\" + originalFileName + "";
+                    }
                 }
+                catch {
+                    parent.decrementNMusic();
+                    return " " + idWork.ToString().PadRight(3) + " " + "ERR.. " + folderPath + "\\" + originalFileName + "";
+                }
+
+
+                return "";
             }
-            catch { }
-            return "ERR.. "+ folderPath+"\\"+ originalFileName;
+            catch {
+                parent.decrementNMusic();
+                return " " + idWork.ToString().PadRight(3) + " " + "ERR.. " + folderPath + "\\" + originalFileName + "";
+            }
+
         }
+        
+        private void downloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+
+            Console.WriteLine(
+                " " + idWork.ToString().PadRight(3) + " " + "1/2 OK : " + folderPath + "\\" + originalFileName
+            );
+
+            //string filenameMP3 = originalFileName + ".mp3";
+
+            try
+            {
+                client.Dispose();
+
+                
+               ConvertMP3 mp3c =  new ConvertMP3(folderPath, originalFileName);
+
+                if (mp3c.result)
+                    Console.WriteLine(
+                        " " + idWork.ToString().PadRight(3) + " " + "2/2 OK : " + folderPath + "\\" + "..."
+                    );
+                else
+                    throw new Exception("err");
+            }
+            catch {
+                    Console.WriteLine(
+                        " " + idWork.ToString().PadRight(3) + " " + "2/2 ERR : " + folderPath + "\\" + "..."
+                    );
+            }
+
+            parent.taskComplete(idWork);
+        }
+
+
+        
 
     }
 }
