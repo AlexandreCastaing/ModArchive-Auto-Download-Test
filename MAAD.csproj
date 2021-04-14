@@ -9,7 +9,10 @@
     <PackageReference Include="Google.Apis" Version="1.51.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.51.0" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.51.0.2288" />
+    <PackageReference Include="IKVM" Version="8.1.5717" />
     <PackageReference Include="libmodplug" Version="0.8.8.5" />
+    <PackageReference Include="NAudio" Version="2.0.0" />
+    <PackageReference Include="NPOI" Version="2.5.2" />
   </ItemGroup>
 
   <ItemGroup>
