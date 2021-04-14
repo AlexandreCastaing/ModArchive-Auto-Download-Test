@@ -19,6 +19,10 @@ namespace ModArchiveAutoDownloader
         int nTracksTotal = 0;
         string format;
 
+        public bool isWritingOnMixFile = false;
+        public bool isWritingVIDEO = false;
+        public bool isRenamingMixFile = false;
+
         public string envdir = "";
 
 
@@ -87,7 +91,7 @@ namespace ModArchiveAutoDownloader
                     {
                         title += /*i + "=" +*/ "null" + " ;  ";
                     }
-                    else if (taskWork.IsCompleted)
+                    else if (taskWork.IsCompleted && iscompleted[i] == true)
                         title += /*i + "=" +*/ "ok" + " ;  ";
                     else
                     {

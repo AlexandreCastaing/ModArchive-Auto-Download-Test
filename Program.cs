@@ -16,12 +16,12 @@ namespace ModArchiveAutoDownloader
             string dataTrackerPath = @"D:\alex\ARCHIVE\Dev\ModArchive\DATA\";
            
             // random between min & max id
-            int firstID = 175000; //45000
-            int lastID = 180000; //165000
+            int firstID = 180000; //45000
+            int lastID = 190000; //165000
 
             string format = "not working todo";
 
-            int limitMusics = 5000;
+            int limitMusics = 10000;
 
             Console.WriteLine("Press + or - for change numb of threads.");
 

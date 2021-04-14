@@ -45,8 +45,9 @@ namespace ModArchiveAutoDownloader
                 process.Start();
                 process.WaitForExit(90000);
                 process.Close();
-  
+
                 string pathWav = pathMp3 + "\\" + filenameMOD + ".wav";
+                string pathMp3_2 = pathMp3 + "\\" + filenameMOD + ".mp3";
 
                 if (!Directory.Exists(pathMp3))
                     Directory.CreateDirectory(pathMp3);
@@ -54,18 +55,55 @@ namespace ModArchiveAutoDownloader
                     System.IO.File.Delete(pathWav);
                 System.IO.File.Move(fileMod + ".wav", pathWav);
 
-                makeWavMix(pathMp3 + "\\", pathWav, pathMp4, filenameMOD);
+
+
+                // *o*o*o*o*o*o*o*o* STEP 2  CONVERT TO MP3 NORMALIZED
+                //ffmpeg -i input.flac -filter:a "volume=1" output.mp3
+
+                try // delete old file
+                {
+                    System.IO.File.Delete(pathMp3_2);
+                }
+                catch { }
+
+                string args2 = "-i " +
+                 "\"" + pathWav + "" + "\" " +
+                 "-filter:a \"volume = 1\" " +
+                "\""+pathMp3_2+"\"";
+
+                string pathPRJCT = gparent.envdir;
+                string pathffmpeg = pathPRJCT + @"\_ffm\bin\";
+                ProcessStartInfo p2 = new ProcessStartInfo(pathffmpeg + "ffmpeg.exe");
+
+                p2.WorkingDirectory = pathffmpeg;
+
+                p2.RedirectStandardOutput = false; // true;
+                p2.Arguments = args2;
+
+                Process process2 = new Process();
+                process2.StartInfo = p2;
+
+                process2.Start();
+                process2.WaitForExit(60000 * 60);
+                process2.Close();
+
+                System.IO.File.Delete(pathWav);
+                // *o*o*o*o*o*o*o*o*
+
+
+
+                makeMix(pathMp3 + "\\", pathMp3_2, pathMp4, filenameMOD);
             }
             catch (Exception e){ result = false; }; 
         }
-        private void makeWavMix(string pathWavFolder, string pathWAV, string pathMp4, string filenameMOD)
+        private void makeMix(string pathWavFolder, string pathWAV, string pathMp4, string filenameMOD)
         {
             try
             {
                 string pathPRJCT = gparent.envdir;
                 
                
-                string pathMixTemp = pathWavFolder + "JACKRABBIT_mixtmp.wav";
+                string pathMixTemp = pathWavFolder + "JACKRABBIT_mixtmp.mp3";
 
                 /*               
                 string args = "" +
@@ -95,34 +133,101 @@ namespace ModArchiveAutoDownloader
                 
                 
                 
-                TimeSpan TIMEMIX = new TimeSpan(9, 30, 0);
+               // TimeSpan TIMEMIX = new TimeSpan(9, 30, 0);
 
-                 TIMEMIX = new TimeSpan(8, 0, 0);
-
-
+                // TIMEMIX = new TimeSpan(8, 0, 0);
 
 
-                bool isMixOk = Concatenate_v2(pathMixTemp, pathMixTemp, pathWAV, pathWavFolder, TIMEMIX); //(pathMixTemp, pathWAV, TIMEMIX);  //
-                if (isMixOk)
-                {
-                    DateTime now = DateTime.Now;
-                    string filenameMIXREADY = "JACKRABBIT_mix_" +
-                        now.ToString("yyyy-MM-dd-HH-mm-ss")
-                        + ".wav";
-                    string filenameMIXREADYVIDEOwithoutExtent = "JACKRABBIT_mix_" +
-                                           now.ToString("yyyy-MM-dd-HH-mm-ss");
+
+
+                // bool isMixOk = Concatenate_v2(pathMixTemp, pathMixTemp, pathWAV, pathWavFolder, TIMEMIX); //(pathMixTemp, pathWAV, TIMEMIX);  //
+
+                long sizelimitfile = (long)692954000; //octets   (8go)  1000 *       //* 1000 * 50 * 1 * 1000  *  8
+
+                //if (gparent.isWritingVIDEO != true)
+                //{
+
+                if(gparent.isRenamingMixFile != true) { 
+
+                    bool mixready = concatMP3(pathMixTemp, pathWAV, sizelimitfile);
+                
+                    if (mixready)
+                    {
+                        gparent.isRenamingMixFile = true;
+                        DateTime now = DateTime.Now;
+                        string filenameMIXREADY = "JACKRABBIT_mix_" +
+                            now.ToString("yyyy-MM-dd-HH-mm-ss")
+                            + ".mp3";
+                        string filenameMIXREADYVIDEOwithoutExtent = "JACKRABBIT_mix_" +
+                                               now.ToString("yyyy-MM-dd-HH-mm-ss");
                                      
 
-                    System.IO.File.Move(pathMixTemp, pathWavFolder + filenameMIXREADY);
+                        System.IO.File.Move(pathMixTemp, pathWavFolder + filenameMIXREADY);
 
-                    makeAVideo(pathWavFolder + filenameMIXREADY, pathMp4, filenameMIXREADYVIDEOwithoutExtent, pathPRJCT);
+                        gparent.isRenamingMixFile = false;
+                        // if (gparent.isWritingVIDEO != true) { 
+
+                        gparent.isWritingVIDEO = true;
+                    
+                        makeAVideo(pathWavFolder + filenameMIXREADY, pathMp4, filenameMIXREADYVIDEOwithoutExtent, pathPRJCT);
+                        gparent.isWritingVIDEO = false;
+                        //}
+                    }
                 }
+                //}
+
 
                 System.IO.File.Delete(pathWAV);
 
                 //YOUTUBE(filenameMOD, pathFileMP4, pathPRJCT);
             }
-            catch (Exception e){ }
+            catch (Exception e){ gparent.isWritingOnMixFile = false; }
+        }
+
+        private bool concatMP3(string outputfilepath, string fp2, long sizelimitOctet)
+        {
+            string outputfilepathTEMP = outputfilepath + ".tmp";
+          
+            if (System.IO.File.Exists(outputfilepath))
+            {
+                if (System.IO.File.Exists(outputfilepathTEMP))
+                    System.IO.File.Delete(outputfilepathTEMP);
+
+                System.IO.File.Move(outputfilepath, outputfilepathTEMP);
+            }
+
+            bool ok = false;
+            using (var fs = System.IO.File.OpenWrite(outputfilepath))
+            {
+
+                byte[] buffer = new byte[0];
+                if(System.IO.File.Exists(outputfilepathTEMP))
+                    buffer = System.IO.File.ReadAllBytes(outputfilepathTEMP);
+
+                while (gparent.isWritingOnMixFile) ;
+
+                gparent.isWritingOnMixFile = true;
+
+                fs.Write(buffer, 0, buffer.Length);
+                buffer = System.IO.File.ReadAllBytes(fp2);
+
+                long size1 = buffer.Length + fs.Length;
+                int delta1 = 0;
+                if (size1 >= sizelimitOctet)
+                {
+                    delta1 = (int)(size1 - sizelimitOctet);
+                    ok = true;
+                }
+                    
+
+                fs.Write(buffer, 0, Math.Max(buffer.Length - delta1,0));
+                fs.Flush();
+                gparent.isWritingOnMixFile = false;
+
+                if (fs.Length >= sizelimitOctet) ok = true;
+            }
+            System.IO.File.Delete(outputfilepathTEMP);
+            return ok;
         }
 
         private void makeAVideo(string pathWAV, string pathMp4, string filenameMOD, string pathPRJCT)
@@ -260,7 +365,7 @@ namespace ModArchiveAutoDownloader
                 // lire nouvelle musique 
                 trackreader = new WaveFileReader(pathWAV);
 
-                waveFileMIXWriter = new WaveFileWriter(pathMixTemp, trackreader.WaveFormat);
+                waveFileMIXWriter = new WaveFileWriter(pathMixTemp, trackreader.WaveFormat );
 
 
 
