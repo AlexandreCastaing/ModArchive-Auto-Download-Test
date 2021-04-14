@@ -9,8 +9,9 @@ copy paste this
  + + +    example command ffmpeg   to convert wav to video  
  + + +    ffmpeg -r 20 -i miami.it.wav -f image2 -s 740x414 -i rdmmdl740x414.png -vcodec libx264 -crf 25  -pix_fmt yuv420p test.mp4
 
-todo:  loading bar bug
-todo:  merge vidéo / audio (the best performance 
+todo:  loading bar bug  OK
+todo:  merge vidéo / audio (the best performance  OK
+todo:  block file traitment on thread with a global bool value (accessible by all threads) 
 todo:   .. lets eat milk cookie
 
 info data path :  D:\alex\ARCHIVE\Dev\ModArchive\DATA
